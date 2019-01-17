@@ -164,9 +164,9 @@ gala_test<-newgalaxy[-partition,]
 ###SVM###
 
 
-svm_3_nd<-train(galaxySentiment~.,
-             data=gala_train[goodcor],
-             method= "svmLinear")
+# svm_3_nd<-train(galaxySentiment~.,
+#              data=gala_train[goodcor],
+#              method= "svmLinear")
 
 
 #saveRDS(object = svm_3_nd, file="svm_3_nd.rds")
@@ -241,17 +241,37 @@ postResample(lmpredict,newgalaxy$galaxySentiment)
 
 
 
-disfixed7_galaxy <- discretize(newgalaxy $galaxySentiment, "fixed", 
-                               breaks =c(-Inf, -50, -10, -1, 1, 10, 50, Inf),
-                               labels = c("very_negative", "negative", "somewhat_negative", 
-                                          "neutral", "somewhat_positive", "positive", "very_positive"))
-summary(disfixed7_galaxy)
-
-str(disfixed7_galaxy)
-
+# disfixed7_galaxy <- discretize(newgalaxy$galaxySentiment, "fixed", 
+#                                breaks =c(-Inf, -50, -10, -1, 1, 10, 50, Inf),
+#                                labels = c("very_negative", "negative", "somewhat_negative", 
+#                                           "neutral", "somewhat_positive", "positive", "very_positive"))
+# summary(disfixed7_galaxy)
+# 
+# str(disfixed7_galaxy)
 
 #newiphone$iphoneSentiment<-disfixed7_iphone
-newgalaxy$galaxySentiment<-disfixed7_galaxy
+#newgalaxy$galaxySentiment<-disfixed7_galaxy
+
+
+#discretizing validation sentiment variable###
+disfixed7_gala_test <- discretize(gala_test$galaxySentiment, "fixed",
+                               breaks =c(-Inf, -50, -10, -1, 1, 10, 50, Inf),
+                               labels = c("very_negative", "negative", "somewhat_negative",
+                                          "neutral", "somewhat_positive", "positive", "very_positive"))
+summary(disfixed7_gala_test)
+
+gala_test$galaxySentiment<-disfixed7_gala_test #replacing for discretize data#
+
+disfixed7_lmpredict <- discretize(lmpredict, "fixed",
+                                  breaks =c(-Inf, -50, -10, -1, 1, 10, 50, Inf),
+                                  labels = c("very_negative", "negative", "somewhat_negative",
+                                             "neutral", "somewhat_positive", "positive", "very_positive"))
+
+summary(disfixed7_lmpredict)
+
+
+confusionMatrix(disfixed7_lmpredict, gala_test$galaxySentiment) #any improvement#
+
 
 ####NEXT STEPS####
 
